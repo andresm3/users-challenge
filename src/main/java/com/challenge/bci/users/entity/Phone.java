@@ -1,6 +1,8 @@
 package com.challenge.bci.users.entity;
 
 import com.challenge.bci.users.dto.PhoneRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,21 +20,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "telefono")
+//@Table(name = "telefono")
 public class Phone {
 
   @Id
   @GeneratedValue
+  @JsonIgnore
   private Long id;
   private String number;
   private String cityCode;
   private String countryCode;
-  /*@ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "usuario_id",
-      referencedColumnName = "id")*/
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = Customer.class)
-  @JoinColumn(name = "customerId")
-  private Customer customer;
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL)
+  @JoinColumn(name = "user_id")
+  private User user;
 
 
   public Phone(PhoneRequest phoneRequest){
