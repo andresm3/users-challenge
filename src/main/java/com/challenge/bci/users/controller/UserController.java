@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
   @Autowired
@@ -27,9 +27,10 @@ public class UserController {
       content = @Content(mediaType = "application/json",
           schema = @Schema(implementation = User.class)
       ))
-  @PostMapping(value ="/create")
+  @PostMapping
   public ResponseEntity<User> createUser(@Valid @RequestBody UserRequest userRequest){
     var user = userService.registerUser(userRequest);
-    return new ResponseEntity<>(user, HttpStatus.CREATED);
+    //return new ResponseEntity<>(user, HttpStatus.CREATED);
+    return ResponseEntity.status(HttpStatus.CREATED).body(user);
   }
 }

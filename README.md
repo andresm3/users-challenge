@@ -14,23 +14,15 @@ API Backend creacion de usuarios.
 
 
 
-## Ejecutar en Desarrollo
+## Ejecutar
 
 ### Paso 1: Clonar el repositorio
 
 ```sh
-git clone -b develop git@bitbucket.org:lp-devsecops/biz-commercial-calculate-quote-vida-lpv-v1.git
+git clone https://github.com/andresm3/users-challenge.git
 ```
 
-### Paso 2: Crear nuestra rama feature
-
-A partir de la rama develop, creamos nuestra rama feature. El número del RQ dependerá del requerimiento.
-
-```sh
-git checkout -b feature/RQ2023-001
-```
-
-### Paso 3: Descargar las dependencias con maven
+### Paso 2: Descargar las dependencias con maven
 Con Maven:
 
 ```sh
@@ -42,25 +34,40 @@ Con Maven Wrapper:
 .\mvnw.cmd clean install
 ```
 
-#### Paso 4: Configurar los properties
+#### Paso 3: Configurar los properties
 
-Nos vamos al path `src/main/resources` y nos aseguramos de que el archivo `application.properties` tenga la siguiente configuración:
+- El parametro regex para el password es configurable, actualmente restringe lo siguiente:
+  - At least one upper case English letter, (?=.*?[A-Z])
+  - At least one lower case English letter, (?=.*?[a-z])
+  - At least one digit, (?=.*?[0-9])
+  - At least one special character, (?=.*?[#?!@$%^&*-])
+  - Minimum eight in length .{8,} (with the anchors)
+
+Nos vamos al path `src/main/resources` y nos aseguramos de que el archivo `application.properties` con la siguiente configuración:
 
 ```properties
-spring.profiles.active=local
+spring.application.name=users
+spring.datasource.url=jdbc:h2:mem:temporaldb;NON_KEYWORDS=user
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.show-sql=true
+spring.h2.console.enabled=true
+
+# springdoc configuration
+springdoc.swagger-ui.path=/swagger-ui
+springdoc.api-docs.enabled=true
+
+# app configuration
+app.password.regex=^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$
+
 ```
 
-Esto cargará el perfil `application-local.properties` que cuenta con las variables de entorno necesarias para ejecutar la aplicación en local.
-En caso que requiera ejecutar con recursos de AWS como son Parameters Storage, SQS, Secret Manager, se debe configurar las [credenciales](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html?icmpid=docs_sso_user_portal)  en la PC del desarrollador y configurar el archivo `application.properties` con la siguiente configuración:
 
-```properties
-spring.profiles.active=prod
-```
+### Paso 4: Ejecutar la aplicación
 
-
-### Paso 5: Ejecutar la aplicación
-
-En nuestro IDE favorito (IntelliJ IDEA, Eclipse, VSCode) ejecutamos la clase `ExampleApplication.java`, que se encuentra en el path `src/main/java` y dentro del package `pe.com.lapositiva.tipo.procesonegocio.operacion.recurso.ramo.empresa`
+En nuestro IDE (IntelliJ IDEA, Eclipse, VSCode) ejecutamos la clase `UsersApplication.java`
 
 En caso que se requiera ejecutar la aplicación por consola con Maven:
 
@@ -70,17 +77,16 @@ mvn spring-boot:run
 
 
 
-### Paso 4: Documentación Swagger
+### Paso 5: Documentación Swagger
 
-Abrimos en el navegador la url http://localhost:8080/swagger-u y nos debe mostrar la documentación swagger de la aplicación.
+Abrimos en el navegador la url http://localhost:8080/swagger-ui y nos debe mostrar la documentación swagger de la aplicación.
 
-Ahí encontraremos la url de petición del servicio: `http://localhost`, los paths de las peticiones, los métodos, el esquema de entrada petición con un ejemplo, el modelo de respuesta con un ejemplo.
 
-### Paso 5: Probar el servicio con Postman
+### Paso 6: Probar el servicio con Postman
 
 Abrimos Postman y configuramos lo siguiente:
 
-Url: `http://localhost:8080/users/create`
+Url: `http://localhost:8080/api/users`
 
 Método: `POST`
 
@@ -104,7 +110,7 @@ Body: `raw` y `JSON`
 En caso de probar con curl:
 
 ```ssh
-curl --location 'http://localhost:8080/users/create' \
+curl --location 'http://localhost:8080/api/users' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "name": "Lolo",
@@ -141,7 +147,7 @@ Ejecutamos la petición y nos debe mostrar la respuesta del servicio, como el si
 }
 ```
 
-## Testear la Aplicación
+## Pruebas Unitarias
 
 ### Paso 1: Ejecutar los test unitarios
 

@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class UserRequest {
 
   @JsonProperty("name")
@@ -23,6 +25,6 @@ public class UserRequest {
 
   @JsonProperty("phones")
   @Valid
-  @NotNull(message = "Campo phones es obligatorio")
+  //@NotNull(message = "Campo phones es obligatorio")
   List<PhoneRequest> phoneList;
 }
