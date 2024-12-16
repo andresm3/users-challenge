@@ -1,24 +1,30 @@
 package com.challenge.bci.users.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class UserRequest {
 
   @JsonProperty("name")
-  @NotBlank(message = "Field name must be required")
+  @NotBlank(message = "Campo name es obligatorio")
   private String name;
 
   @JsonProperty("email")
-  @NotBlank(message = "Field email must be required")
+  @NotBlank(message = "Campo email es obligatorio")
   private String email;
 
   @JsonProperty("password")
-  @NotBlank(message = "Field password must be required")
+  @NotBlank(message = "Campo password es obligatorio")
   private String password;
 
   @JsonProperty("phones")
+  @Valid
+  //@NotNull(message = "Campo phones es obligatorio")
   List<PhoneRequest> phoneList;
 }
